@@ -313,3 +313,70 @@ count.textContent=companions;
 }
 
 };
+// ======================================
+// SEND RSVP TO GOOGLE SHEETS
+// ======================================
+
+const rsvpForm = document.getElementById("rsvpForm");
+
+if (rsvpForm) {
+
+    rsvpForm.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const data = {
+
+            name: document.getElementById("guestName").value,
+
+            attendance: document.getElementById("attendance").value,
+
+            companions: document.getElementById("count").textContent,
+
+            message: document.getElementById("message").value
+
+        };
+
+        try {
+
+            const response = await fetch("https://script.google.com/macros/s/AKfycbyhlcpkm_LXOH-pLHPT71PudcvqMJF4Yq-aiR8nl5IqRq19tRNLYqvnt7dJTtDQGBdK/exec", {
+
+                method: "POST",
+
+                mode: "cors",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify(data)
+
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+
+                alert("تم إرسال تأكيد حضورك بنجاح 🤍");
+
+                rsvpForm.reset();
+
+                document.getElementById("count").textContent = "0";
+
+                companions = 0;
+
+            }
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert("حدث خطأ أثناء الإرسال");
+
+        }
+
+    });
+
+}
